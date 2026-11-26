@@ -7,6 +7,8 @@
  * - main: vanilla globals, every frontend page.
  * - transitions: swup, every frontend page except the customizer preview.
  * - islands: single React entry, deferred, every frontend page.
+ * - views: swup-aware on-demand view loader, every frontend page
+ *   except the customizer preview.
  *
  * Never loaded in wp-admin or the block editor. The snoka-access portal
  * (/portal/*) is excluded from swup client-side in transitions.ts; the files
@@ -151,6 +153,52 @@ function snoka_club_enqueue_transitions(): void {
 	}
 }
 add_action( 'wp_enqueue_scripts', 'snoka_club_enqueue_transitions' );
+
+/**
+ * Enqueue the swup-aware on-demand view loader (frontend only, never the
+ * customizer preview). Scans for [data-snoka-view] roots on load and on
+ * every swup page view; views opt out of their own legacy boot when the
+ * controller switch below is active.
+ */
+function snoka_club_enqueue_views(): void {
+	if ( is_admin() || is_customize_preview() ) {
+		return;
+	}
+
+	$asset = snoka_club_entry( 'src/views-controller.ts' );
+	if ( '' === $asset['js'] ) {
+		return;
+	}
+
+	wp_enqueue_script(
+		'snoka-club-views',
+		$asset['js'],
+		array(),
+		SNOKA_CLUB_VERSION,
+		array(
+			'in_footer' => true,
+			'strategy'  => 'defer',
+		)
+	);
+
+	foreach ( $asset['css'] as $i => $css_url ) {
+		wp_enqueue_style( 'snoka-club-views-style-' . $i, $css_url, array(), SNOKA_CLUB_VERSION );
+	}
+}
+add_action( 'wp_enqueue_scripts', 'snoka_club_enqueue_views' );
+
+/**
+ * Signal to interactive plugins that the theme-owned swup view controller
+ * is active. Plugins must skip their own viewScript enqueue and
+ * DOMContentLoaded self-boot when this filter returns true; the
+ * controller is then the sole boot path (it also runs on initial load).
+ *
+ * @return bool Always true on this theme's frontend.
+ */
+function snoka_club_views_controller_active(): bool {
+	return true;
+}
+add_filter( 'snoka_swup_controller_active', 'snoka_club_views_controller_active' );
 
 /**
  * Load theme bundles as ES modules.

@@ -188,9 +188,11 @@ if (!shouldSkip()) {
 			// Calendar page: swup only when the plugin's boot machinery
 			// is present on THIS page (view bundle listens for
 			// swup:page:view). The bundle is calendar-page-only today, so
-			// arrivals from elsewhere full-load until the plugin enqueues
-			// it site-wide — at which point this gate opens by itself and
-			// the swup path just works. See check-swup-calendar.
+			// arrivals from elsewhere full-load. Once the events views
+			// self-boot through the views controller
+			// (data-snoka-view-src, SWUP-DYNAMIC-LOADING.md), remove this
+			// gate: arrival will swup-navigate and the controller will
+			// load + boot the shell. See check-swup-calendar.
 			if (
 				EVENTS_CALENDAR_PATTERN.test(url) &&
 				!document.querySelector('script[src*="blocks/events/view"]')
@@ -200,7 +202,14 @@ if (!shouldSkip()) {
 			return false;
 		},
 		plugins: [
-			new SwupHeadPlugin(),
+			// Controller-added view stylesheets survive swaps; everything
+			// else HeadPlugin handles (title, meta, theme styles, preloads).
+			// View *scripts* are the controller's job (data-snoka-view-src),
+			// never HeadPlugin's — synced script tags do not execute.
+			new SwupHeadPlugin({
+				persistTags: 'link[data-snoka-view-style]',
+				awaitAssets: true,
+			}),
 			new SwupPreloadPlugin(),
 			new SwupA11yPlugin(),
 		],

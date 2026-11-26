@@ -19,6 +19,7 @@ export default defineConfig( {
 				main: 'src/main.ts',
 				transitions: 'src/transitions.ts',
 				islands: 'src/islands.tsx',
+				views: 'src/views-controller.ts',
 			},
 		},
 	},

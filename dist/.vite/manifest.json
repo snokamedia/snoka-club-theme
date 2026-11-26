@@ -18,12 +18,18 @@
     ]
   },
   "src/transitions.ts": {
-    "file": "assets/transitions-DBRGZw-A.js",
+    "file": "assets/transitions-CDhnUh9t.js",
     "name": "transitions",
     "src": "src/transitions.ts",
     "isEntry": true,
     "css": [
       "assets/transitions-B3MuXmk8.css"
     ]
+  },
+  "src/views-controller.ts": {
+    "file": "assets/views-CtKGeNtj.js",
+    "name": "views",
+    "src": "src/views-controller.ts",
+    "isEntry": true
   }
 }
