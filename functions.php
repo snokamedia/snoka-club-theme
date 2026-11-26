@@ -23,8 +23,20 @@ require_once get_template_directory() . '/inc/block-support.php';
 require_once get_template_directory() . '/inc/icons.php';
 require_once get_template_directory() . '/inc/nav-overlay.php';
 require_once get_template_directory() . '/inc/rest-extras.php';
+require_once get_template_directory() . '/inc/post-types.php';
 require_once get_template_directory() . '/inc/template-tags.php';
 require_once get_template_directory() . '/inc/performance.php';
+
+/**
+ * Club login branding: logo + steel-blue button to match the theme.
+ */
+function snoka_club_login_branding(): void {
+	$logo = esc_url( get_theme_file_uri( 'assets/login-logo.svg' ) );
+	echo '<style>.login h1 a{background-image:url(' . $logo . ');width:250px;height:120px;background-size:contain;background-position:center;margin:0 auto;}'
+		. '.login .button-primary{background:#345889;border-color:#345889;}'
+		. '.login .button-primary:hover{background:#2B4870;border-color:#2B4870;}</style>';
+}
+add_action( 'login_head', 'snoka_club_login_branding' );
 
 /**
  * Theme setup: block styles, editor styles, feed links, title tag.
