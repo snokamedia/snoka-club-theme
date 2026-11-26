@@ -1,0 +1,45 @@
+/**
+ * Self-hosted type pairing: Archivo (headings) + Inter (body), latin
+ * subsets only. Absolute theme paths pass through Vite untouched, so the
+ * preload hints in inc/performance.php can address the same stable URLs.
+ */
+
+@font-face {
+	font-family: "Archivo";
+	font-style: normal;
+	font-weight: 600;
+	font-display: swap;
+	src: url( "/wp-content/themes/snoka-club/assets/fonts/archivo-latin-600.woff2" ) format( "woff2" );
+}
+
+@font-face {
+	font-family: "Archivo";
+	font-style: normal;
+	font-weight: 700;
+	font-display: swap;
+	src: url( "/wp-content/themes/snoka-club/assets/fonts/archivo-latin-700.woff2" ) format( "woff2" );
+}
+
+@font-face {
+	font-family: "Inter";
+	font-style: normal;
+	font-weight: 400;
+	font-display: swap;
+	src: url( "/wp-content/themes/snoka-club/assets/fonts/inter-latin-400.woff2" ) format( "woff2" );
+}
+
+@font-face {
+	font-family: "Inter";
+	font-style: normal;
+	font-weight: 500;
+	font-display: swap;
+	src: url( "/wp-content/themes/snoka-club/assets/fonts/inter-latin-500.woff2" ) format( "woff2" );
+}
+
+@font-face {
+	font-family: "Inter";
+	font-style: normal;
+	font-weight: 600;
+	font-display: swap;
+	src: url( "/wp-content/themes/snoka-club/assets/fonts/inter-latin-600.woff2" ) format( "woff2" );
+}

@@ -1,0 +1,54 @@
+{
+	"name": "snoka-club",
+	"private": true,
+	"version": "0.3.0",
+	"type": "module",
+	"engines": {
+		"node": ">=20.19.0"
+	},
+	"scripts": {
+		"dev": "vite build --watch --mode development & vite build --watch --mode development --config vite.blocks.config.mjs",
+		"build": "vite build && vite build --config vite.blocks.config.mjs",
+		"typecheck": "tsc --noEmit",
+		"lint": "eslint ./src/",
+		"icons:sync": "node ./scripts/icons-sync.mjs",
+		"validate:icons": "node ./scripts/validate-icons.mjs",
+		"validate:blocks": "node ./scripts/validate-blocks.mjs",
+		"smoke:runtime": "node ./scripts/smoke-runtime.mjs",
+		"smoke:wp": "node ./scripts/smoke-wp.mjs",
+		"check:editor": "node ./scripts/check-editor.mjs",
+		"check:visual": "node ./scripts/check-visual.mjs",
+		"check:front": "node ./scripts/check-front.mjs",
+		"check:mobile-menu": "node ./scripts/check-mobile-menu.mjs",
+		"check:swup-calendar": "node ./scripts/check-swup-calendar.mjs",
+		"check:browser-menu": "node ./scripts/check-browser-menu.mjs",
+		"check:php": "files=$(git diff --name-only --diff-filter=ACMR -- '*.php'; git ls-files --others --exclude-standard -- '*.php'); if [ -z \"$files\" ]; then echo 'check:php: no PHP changed'; else for f in $files; do [ -f \"$f\" ] && phpcbf --standard=phpcs.xml.dist \"$f\" >/dev/null 2>&1; true; done; for f in $files; do [ -f \"$f\" ] && phpcs --standard=phpcs.xml.dist \"$f\" || exit 1; done; echo 'check:php: clean'; fi",
+		"check": "pnpm build && pnpm typecheck && pnpm lint && pnpm validate:icons && pnpm validate:blocks && pnpm smoke:runtime && pnpm smoke:wp && pnpm check:editor && pnpm check:visual && pnpm check:php && pnpm check:front && pnpm check:mobile-menu"
+	},
+	"dependencies": {
+		"@base-ui/react": "1.9.0",
+		"@swup/a11y-plugin": "5.2.1",
+		"@swup/head-plugin": "2.3.1",
+		"@swup/preload-plugin": "3.2.12",
+		"@tabler/icons-react": "3.50.0",
+		"react": "19.3.1",
+		"react-dom": "^19.3.1",
+		"swup": "4.10.0"
+	},
+	"devDependencies": {
+		"@fontsource/archivo": "^5.3.0",
+		"@fontsource/inter": "^5.3.0",
+		"@tabler/icons": "3.50.0",
+		"@types/react": "^19.3.0",
+		"@types/react-dom": "^19.3.0",
+		"@vitejs/plugin-react": "^6.1.2",
+		"@wordpress/block-library": "^12.0.0",
+		"@wordpress/blocks": "^17.0.0",
+		"@wordpress/eslint-plugin": "^28.0.0",
+		"eslint": "^10.13.0",
+		"jsdom": "^30.1.3",
+		"playwright-core": "^1.64.1",
+		"typescript": "^5.9.3",
+		"vite": "^8.3.5"
+	}
+}

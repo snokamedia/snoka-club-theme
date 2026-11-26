@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<ruleset name="Snoka Club">
+	<description>WordPress coding standards for theme runtime code. scripts/ holds dev-only tooling (node harnesses, eval-file diagnostics) that is exercised by execution, not by sniffing.</description>
+	<file>.</file>
+	<exclude-pattern>*/node_modules/*</exclude-pattern>
+	<exclude-pattern>*/vendor/*</exclude-pattern>
+	<exclude-pattern>*/dist/*</exclude-pattern>
+	<exclude-pattern>*/assets/*</exclude-pattern>
+	<exclude-pattern>scripts/*</exclude-pattern>
+	<rule ref="WordPress"/>
+</ruleset>

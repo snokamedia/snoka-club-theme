@@ -1,0 +1,554 @@
+/**
+ * Header + navigation design: burger placement, overlay menu, dropdowns.
+ * Loaded with the deferred `main` entry — below-the-fold CSS, never render
+ * blocking. The mobile overlay list is a theme-rendered rounded tree
+ * (link + toggle button, see inc/nav-overlay.php); the dialog shell, open/close,
+ * and focus handling stay core's.
+ */
+
+/* Animated burger → X (classic variant). Markup (.rails × .rail) is
+injected by initMenuIcon() in main.ts onto core's responsive open button;
+open state mirrors the real overlay (html.has-modal-open), never demo
+state — the button keeps core's own aria-expanded semantics. */
+.wp-block-navigation__responsive-container-open.menu-icon svg,
+.wp-block-navigation__responsive-dialog-open.menu-icon svg {
+	display: none;
+}
+
+.menu-icon { --duration:320ms; --ease:cubic-bezier(.22,.8,.25,1); --a0:translate3d(0,-8px,0); --c0:translate3d(0,8px,0); --b0:1; --ob:0; --origin:center; --wrap:rotate(0deg); width:64px; height:64px; padding:0; border:0; border-radius:16px; background:transparent; color:inherit; cursor:pointer; display:inline-grid; place-items:center; perspective:180px; -webkit-tap-highlight-color:transparent; }
+.menu-icon:focus-visible { outline:3px solid #7958ed; outline-offset:5px; }
+.menu-icon .rails { position:relative; display:block; width:28px; height:26px; transform:rotate(0deg); transition:transform var(--duration) var(--ease); }
+.menu-icon .rail { position:absolute; display:block; left:0; top:50%; margin-top:-1.5px; width:28px; height:3px; background:currentColor; border-radius:4px; transform-origin:var(--origin); transition:transform var(--duration) var(--ease),opacity var(--duration) ease; }
+.menu-icon .rail:nth-child(1) { transform:var(--a0); }
+.menu-icon .rail:nth-child(2) { transform:translate3d(0,0,0); opacity:var(--b0); }
+.menu-icon .rail:nth-child(3) { transform:var(--c0); }
+/* Morph follows the dialog state class, not the button attribute, so the
+visual can never desync from what is actually open. Assistive tech gets
+aria-expanded on the button itself (set in JS); sighted users get this. */
+html.snoka-menu-open .menu-icon .rails { transform:var(--wrap); }
+html.snoka-menu-open .menu-icon .rail:nth-child(1) { transform:var(--a); }
+html.snoka-menu-open .menu-icon .rail:nth-child(2) { transform:var(--b); opacity:var(--ob); }
+html.snoka-menu-open .menu-icon .rail:nth-child(3) { transform:var(--c); }
+@media ( prefers-reduced-motion:reduce ) { .menu-icon .rails,.menu-icon .rail { transition:none !important; } }
+.menu-icon.v-classic { --a:translate3d(0,0,0) rotate(45deg); --b:translate3d(0,0,0) scaleX(0); --c:translate3d(0,0,0) rotate(-45deg); --duration:320ms; }
+
+/* Hold the X across page transitions: visit:start closes the overlay (which
+would morph the icon instantly), so pin the pressed geometry until the new
+page arrives and releases snoka-hold-burger. (0,5,1) beats the pressed
+rules (0,4,0) regardless of order. */
+html.snoka-hold-burger .menu-icon.v-classic .rails { transform:var(--wrap); }
+html.snoka-hold-burger .menu-icon.v-classic .rail:nth-child(1) { transform:var(--a); }
+html.snoka-hold-burger .menu-icon.v-classic .rail:nth-child(2) { transform:var(--b); opacity:var(--ob); }
+html.snoka-hold-burger .menu-icon.v-classic .rail:nth-child(3) { transform:var(--c); }
+
+/* Burger sits at the far right of the bar on mobile. Core collapses the
+nav below 600px. margin-inline-start:auto pushes the whole actions cluster
+right when the bar wraps — the parent is space-between, which only
+right-aligns the cluster while everything fits on one line. */
+@media ( max-width: 599px ) {
+	/* (0,2,0) beats core's inline `.is-layout-flex > :is(*, div)` reset,
+	which ties (0,1,0) plain-class rules and wins by source order. */
+	.wp-site-blocks .snoka-header-actions {
+		margin-inline-start: auto;
+	}
+
+	.snoka-header-actions > .wp-block-navigation {
+		order: 2;
+	}
+}
+
+/* Burger hit area + color. */
+.wp-block-navigation__responsive-container-open {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 2.75rem;
+	min-height: 2.75rem;
+	color: var( --wp--preset--color--contrast );
+}
+
+/* Desktop dropdown: white card, 8px shape, no border. */
+.wp-block-navigation .has-child > .wp-block-navigation__submenu-container {
+	border-radius: var( --wp--preset--border-radius--medium );
+	box-shadow: var( --wp--preset--shadow--natural );
+	background: var( --wp--preset--color--base );
+	border: 0;
+	padding: 0.5rem;
+}
+
+/* Secondary flyout auto-flip: core hard-codes right-justified nested
+submenus to right:100% (open left) with no viewport check, so they never
+attempt the right side even when space is free. JS (initSubmenuFlip in
+main.ts) measures on hover/focus and toggles .snoka-submenu-open-right
+when the flyout fits, .snoka-submenu-open-left when a default-right
+flyout would overflow. The extra class beats core (0,6,0). Scoped to the
+782px flyout breakpoint to match core. */
+@media ( min-width: 782px ) {
+	.wp-block-navigation.items-justified-right .wp-block-page-list > .has-child:last-child .wp-block-navigation__submenu-container > .has-child.snoka-submenu-open-right > .wp-block-navigation__submenu-container,
+	.wp-block-navigation.items-justified-right > .wp-block-navigation__container > .has-child:last-child .wp-block-navigation__submenu-container > .has-child.snoka-submenu-open-right > .wp-block-navigation__submenu-container,
+	.wp-block-navigation.items-justified-right .wp-block-page-list > .has-child .wp-block-navigation__submenu-container > .has-child.snoka-submenu-open-right > .wp-block-navigation__submenu-container,
+	.wp-block-navigation.items-justified-right .wp-block-navigation__container .has-child .wp-block-navigation__submenu-container > .has-child.snoka-submenu-open-right > .wp-block-navigation__submenu-container {
+		left: 100%;
+		right: auto;
+	}
+
+	.wp-block-navigation.items-justified-right .wp-block-navigation__submenu-container > .has-child.snoka-submenu-open-right > .wp-block-navigation__submenu-container::before {
+		left: auto;
+		right: 100%;
+	}
+
+	.wp-block-navigation:not( .items-justified-right ) .wp-block-navigation__submenu-container > .has-child.snoka-submenu-open-left > .wp-block-navigation__submenu-container {
+		left: auto;
+		right: 100%;
+	}
+
+	.wp-block-navigation:not( .items-justified-right ) .wp-block-navigation__submenu-container > .has-child.snoka-submenu-open-left > .wp-block-navigation__submenu-container::before {
+		left: 100%;
+		right: auto;
+	}
+
+	.wp-block-navigation .wp-block-navigation__submenu-container > .has-child.snoka-submenu-open-right > .wp-block-navigation-item__content .wp-block-navigation__submenu-icon svg {
+		transform: rotate( -90deg );
+	}
+
+	.wp-block-navigation .wp-block-navigation__submenu-container > .has-child.snoka-submenu-open-left > .wp-block-navigation-item__content .wp-block-navigation__submenu-icon svg {
+		transform: rotate( 90deg );
+	}
+}
+
+.wp-block-navigation .has-child > .wp-block-navigation__submenu-container .wp-block-navigation-item__content {
+	border-radius: var( --wp--preset--border-radius--small );
+	padding: 0.625rem 1rem;
+}
+
+/* Chevron follows the bound expanded state, everywhere. */
+.wp-block-navigation__submenu-icon[aria-expanded="true"] svg {
+	transform: rotate( 180deg );
+}
+
+/* Desktop current page matches the hover language: underline, same metrics
+as the theme's dark-surface links. Scoped above the 600px responsive
+breakpoint so the mobile overlay (decorated separately below) is untouched. */
+@media ( min-width: 600px ) {
+	/* Main menu items: background shape at 8px, no outline ring. Keyboard
+	focus stays visible via the underline language below. Scoped to
+	top-level items so dropdown and overlay treatments are untouched. */
+	.wp-block-navigation > .wp-block-navigation__container > .wp-block-navigation-item > .wp-block-navigation-item__content,
+	.wp-block-navigation .wp-block-page-list > .wp-block-navigation-item > .wp-block-navigation-item__content {
+		border-radius: var( --wp--preset--border-radius--medium );
+		outline: none;
+	}
+
+	.wp-block-navigation .wp-block-navigation-item__content:hover,
+	.wp-block-navigation .wp-block-navigation-item__content:focus-visible,
+	.wp-block-navigation .wp-block-navigation-item__content[aria-current="page"] {
+		text-decoration: underline;
+		text-underline-offset: 3px;
+		text-decoration-thickness: 1px;
+	}
+
+	.wp-block-navigation .wp-block-navigation-item__content:hover {
+		text-decoration-thickness: 2px;
+	}
+}
+
+/* Pre-open cover: core hides the responsive container in its own
+stylesheet, which can arrive late (on soft navigations the link is
+re-added dynamically and loads async). Until then the closed dialog —
+close button, core list, and our tree — renders as plain flow content
+and shifts the layout. Mirror the hidden-until-open state here so the
+closed dialog never flashes. :where() keeps specificity at zero, so
+every core author rule, including .is-menu-open, wins the moment core
+loads; the :not() means the open state never matches this rule. */
+:where(.wp-block-navigation__responsive-container:not(.is-menu-open)) {
+	display: none;
+}
+
+/* Overlay: full-screen contrast sheet while open. Scoped to the open
+state so closed-dialog styles stay untouched. */
+html.has-modal-open .wp-block-navigation__responsive-container {
+	background-color: var( --wp--preset--color--contrast );
+	color: var( --wp--preset--color--base );
+}
+
+html.has-modal-open .wp-block-navigation__responsive-container .wp-block-navigation__responsive-container-content {
+	padding-top: var( --wp--preset--spacing--60 );
+}
+
+/* Desktop keeps core's list; the open dialog shows the tree. Both live in
+the dialog content (core renders one shared list), so the core list hides
+while core's dialog is open. The tree itself stays hidden until a dialog
+shows it — this covers the editor canvas, fallbacks, and any dialog that
+is not currently open. */
+html.has-modal-open .wp-block-navigation__responsive-container.is-menu-open .wp-block-navigation__responsive-container-content > ul.wp-block-navigation__container {
+	display: none;
+}
+
+nav.rounded-tree {
+	display: none;
+}
+
+html.has-modal-open .wp-block-navigation__responsive-container.is-menu-open .wp-block-navigation__responsive-container-content > nav.rounded-tree,
+html.snoka-menu-open .snoka-mobile-dialog nav.rounded-tree {
+	display: block;
+}
+
+/* Overlay menu as a rounded tree (parent link + toggle button, see
+inc/nav-overlay.php). Branch rows split into two distinct touch targets:
+the label link navigates, the 48px toggle expands. The dialog shell,
+open/close, and focus handling stay core's. Branch labels expand,
+links navigate. */
+.rounded-tree {
+	--tree-line: #8fa3ad;
+	--tree-line: color-mix(in srgb, currentColor 28%, transparent);
+	--tree-step: 14px;
+	--tree-row: 46px;
+	--tree-half: 23px;
+	/* Left-aligned full width regardless of the nav block's own
+	justifyContent (the header nav justifies right on desktop). */
+	display: block;
+	width: 100%;
+	text-align: left;
+}
+
+.rounded-tree ul {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.rounded-tree li {
+	position: relative;
+}
+
+/* Modest indentation at every nested level. */
+.rounded-tree ul ul {
+	margin-inline-start: var(--tree-step);
+}
+
+/* Continuous trunk alongside each child and its descendants. */
+.rounded-tree ul ul > li::before {
+	content: "";
+	position: absolute;
+	inset-inline-start: -10px;
+	top: 0;
+	bottom: 0;
+	border-inline-start: 1px solid var(--tree-line);
+	pointer-events: none;
+}
+
+/* A horizontal connection to every child. */
+.rounded-tree ul ul > li::after {
+	content: "";
+	position: absolute;
+	inset-inline-start: -10px;
+	top: var(--tree-half);
+	width: 10px;
+	border-block-start: 1px solid var(--tree-line);
+	pointer-events: none;
+}
+
+/* End each sibling group with a rounded L. */
+.rounded-tree ul ul > li:last-child::before {
+	bottom: auto;
+	height: var(--tree-half);
+	width: 10px;
+	border-block-end: 1px solid var(--tree-line);
+	border-end-start-radius: 5px;
+}
+
+.rounded-tree ul ul > li:last-child::after {
+	content: none;
+}
+
+.rounded-tree :is(.tree-row, .tree-toggle, a, span) {
+	box-sizing: border-box;
+}
+
+/* One pill for every row. Branch rows (.tree-row) lay the label beside
+a fixed 48px toggle with an 8px gap; leaf rows are the link alone. Only
+box layout lives here — text voice (family, color, decoration) is decided
+by the heading-voice rule below, which outranks everything in this block,
+so repeating those declarations here would be dead code. */
+.tree-row {
+	display: flex;
+	align-items: stretch;
+	gap: 8px;
+	min-height: var(--tree-row);
+	border-radius: 6px;
+}
+
+.rounded-tree li a,
+.rounded-tree li span {
+	display: flex;
+	align-items: center;
+	min-width: 0;
+	min-height: var(--tree-row);
+	padding: 10px;
+	border-radius: 6px;
+}
+
+.tree-row > a,
+.tree-row > span {
+	flex: 1 1 auto;
+}
+
+.rounded-tree span {
+	cursor: default;
+}
+
+/* Chevron-only expand target: 48px wide, full row height. No box, no
+fill — the row pill behind it is the visual. Accessible name comes
+from aria-label. */
+.tree-toggle {
+	flex: 0 0 48px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-height: var(--tree-row);
+	padding: 0;
+	border: 0;
+	border-radius: 6px;
+	background: transparent;
+	color: inherit;
+	font: inherit;
+	cursor: pointer;
+}
+
+.rounded-tree ul[hidden] {
+	display: none;
+}
+
+/* All rows share one voice at one size. */
+:is(html.has-modal-open, html.snoka-menu-open) .rounded-tree :is(a, span) {
+	font-family: var(--wp--preset--font-family--heading);
+	font-weight: 600;
+	font-size: clamp(1.1rem, 1rem + 1.5vw, 1.4rem);
+	line-height: 1.25;
+	color: var(--wp--preset--color--base);
+	text-decoration: none;
+}
+
+.tree-toggle::after {
+	content: "";
+	flex: 0 0 6px;
+	height: 6px;
+	border-inline-end: 1px solid currentColor;
+	border-block-end: 1px solid currentColor;
+	transform: rotate(-45deg);
+}
+
+.tree-toggle[aria-expanded="true"]::after {
+	transform: rotate(45deg);
+}
+
+/* Toggle press feedback. There is deliberately no hover or open fill —
+hover feedback is the link underline; the chevron only indicates
+expandability. */
+.tree-toggle:active {
+	background: rgb(255 255 255 / 16%);
+}
+
+/* On a current (chip) row the toggle sits on the light tertiary wash,
+so the white chevron would wash out — give it the chip's dark text
+treatment, matching the link. */
+html.has-modal-open .wp-block-navigation__responsive-container.is-menu-open nav.rounded-tree .tree-row:has(> a[aria-current="page"]) > .tree-toggle {
+	color: var(--wp--preset--color--secondary);
+	color: color-mix(in srgb, var(--wp--preset--color--secondary) 72%, black);
+}
+
+/* Tree rows start underline-free: the dark-surface link rule would
+otherwise underline every row. Underline appears on hover and on the
+current page only. Scoped to beat that (0,4,1) rule. */
+html.has-modal-open .wp-block-navigation__responsive-container.is-menu-open nav.rounded-tree :is(.tree-row > a, .rounded-tree li > a, .tree-toggle) {
+	text-decoration: none;
+}
+
+html.snoka-menu-open .snoka-mobile-dialog nav.rounded-tree :is(.tree-row > a, .rounded-tree li > a, .tree-toggle) {
+	text-decoration: none;
+}
+
+html.has-modal-open .wp-block-navigation__responsive-container.is-menu-open nav.rounded-tree :is(.tree-row > a, .rounded-tree li > a):hover {
+	text-decoration: underline;
+	text-underline-offset: 3px;
+	text-decoration-thickness: 2px;
+}
+
+html.snoka-menu-open .snoka-mobile-dialog nav.rounded-tree :is(.tree-row > a, .rounded-tree li > a):hover {
+	text-decoration: underline;
+	text-underline-offset: 3px;
+	text-decoration-thickness: 2px;
+}
+
+html.has-modal-open .wp-block-navigation__responsive-container.is-menu-open nav.rounded-tree a[aria-current="page"] {
+	text-decoration: underline;
+	text-underline-offset: 3px;
+	text-decoration-thickness: 2px;
+	background: var(--wp--preset--color--tertiary);
+	color: var(--wp--preset--color--secondary);
+	color: color-mix(in srgb, var(--wp--preset--color--secondary) 72%, black);
+	font-weight: 600;
+}
+
+html.snoka-menu-open .snoka-mobile-dialog nav.rounded-tree a[aria-current="page"] {
+	text-decoration: underline;
+	text-underline-offset: 3px;
+	text-decoration-thickness: 2px;
+	background: var(--wp--preset--color--tertiary);
+	color: var(--wp--preset--color--secondary);
+	color: color-mix(in srgb, var(--wp--preset--color--secondary) 72%, black);
+	font-weight: 600;
+}
+
+/* Current branch reads as one pill: extend the chip wash across the
+toggle zone too; the link keeps the text treatment above. */
+html.has-modal-open .wp-block-navigation__responsive-container.is-menu-open nav.rounded-tree .tree-row:has(> a[aria-current="page"]) {
+	background: var(--wp--preset--color--tertiary);
+}
+
+html.snoka-menu-open .snoka-mobile-dialog nav.rounded-tree .tree-row:has(> a[aria-current="page"]) {
+	background: var(--wp--preset--color--tertiary);
+}
+
+.rounded-tree :is(.tree-toggle, a):focus-visible {
+	outline: 2px solid currentColor;
+	outline-offset: 2px;
+}
+
+/* Mobile menu: scroll → lock → open. Overlay plus stacking — no pin,
+no reconstruction. The toggle is never measured or positioned; it keeps
+its exact in-flow box. The nav layer rises above the full-screen sheet
+while open (single html class); the sheet paints behind it. */
+
+.snoka-mobile-nav {
+	--menu-duration: 220ms;
+	--menu-easing: ease-in-out;
+	--menu-toggle-closed: var(--wp--preset--color--contrast, #171717);
+	--menu-toggle-open: var(--wp--preset--color--base, #ffffff);
+}
+
+/* Shared morph timing: rails use the shell's duration/easing so sheet
+opacity, toggle color, and glyph transforms share one clock. */
+.snoka-mobile-nav .menu-icon {
+	--duration: var(--menu-duration);
+	--ease: var(--menu-easing);
+}
+
+/*
+ * Raised nav layer while open. The nav is static in normal flow, so
+ * position:relative without offsets keeps its exact box and only
+ * establishes the stacking context that orders the whole branch —
+ * toggle included — above the sheet. z-index here orders the nav
+ * against the sheet; nothing inside the nav needs its own z-index.
+ */
+html.snoka-menu-open .snoka-mobile-nav {
+	position: relative;
+	z-index: 95;
+}
+
+/* Toggle color transitions on the same clock; rails use currentColor. */
+.snoka-mobile-nav .wp-block-navigation__responsive-container-open {
+	color: var(--menu-toggle-closed);
+	transition: color var(--menu-duration) var(--menu-easing);
+}
+html.snoka-menu-open
+	.snoka-mobile-nav
+	.wp-block-navigation__responsive-container-open {
+	color: var(--menu-toggle-open);
+}
+
+html.snoka-menu-open,
+html.snoka-menu-open body {
+	overflow: hidden;
+}
+
+/* Gradual release of the temporary scroll range on close: the wrapper
+shortens over the same clock as the exit fade so the resting scroll
+position settles instead of snapping. Only the menu script ever sets an
+inline min-height here, so nothing else is affected. Reduced-motion
+users never get the extension (they open in place), so no rule applies
+there and the instant path needs no animation. */
+@media ( prefers-reduced-motion: no-preference ) {
+	.wp-site-blocks {
+		transition: min-height 220ms ease-in-out;
+	}
+}
+
+/* Full-screen sheet behind the raised nav layer. Content clearance
+comes from the aligned row's actual bottom plus a gap
+(--menu-content-top, set once after scroll settles) — never from
+pre-scroll bar heights. Inert until open: hidden attribute when closed,
+pointer-events only while the open class is present. */
+.snoka-mobile-dialog {
+	position: fixed;
+	inset: 0;
+	z-index: 90;
+	background: var(--wp--preset--color--contrast);
+	color: var(--wp--preset--color--base);
+	overflow-y: auto;
+	padding: var(--wp--preset--spacing--40);
+	padding-top: var(
+		--menu-content-top,
+		var(--wp--preset--spacing--40)
+	);
+	padding-bottom: max(
+		var(--wp--preset--spacing--40),
+		env(safe-area-inset-bottom)
+	);
+	opacity: 0;
+	pointer-events: none;
+	transition: opacity var(--menu-duration) var(--menu-easing);
+}
+
+.snoka-mobile-dialog[hidden] {
+	display: none;
+}
+
+html.snoka-menu-open .snoka-mobile-dialog {
+	opacity: 1;
+	pointer-events: auto;
+}
+
+@media ( prefers-reduced-motion: reduce ) {
+	.snoka-mobile-dialog {
+		transition: none;
+	}
+	.snoka-mobile-nav .wp-block-navigation__responsive-container-open {
+		transition: none;
+	}
+}
+
+/* Entrance: staggered rise while opening, motion-safe. */
+@media ( prefers-reduced-motion: no-preference ) {
+	:is(html.has-modal-open, html.snoka-menu-open) .rounded-tree > ul > li {
+		animation: snoka-rise 0.3s ease-out both;
+	}
+
+	:is(html.has-modal-open, html.snoka-menu-open) .rounded-tree > ul > li:nth-child( 2 ) {
+		animation-delay: 0.05s;
+	}
+
+	:is(html.has-modal-open, html.snoka-menu-open) .rounded-tree > ul > li:nth-child( 3 ) {
+		animation-delay: 0.1s;
+	}
+
+	:is(html.has-modal-open, html.snoka-menu-open) .rounded-tree > ul > li:nth-child( 4 ) {
+		animation-delay: 0.15s;
+	}
+
+	:is(html.has-modal-open, html.snoka-menu-open) .rounded-tree > ul > li:nth-child( n + 5 ) {
+		animation-delay: 0.2s;
+	}
+
+	@keyframes snoka-rise {
+		from {
+			opacity: 0;
+			transform: translateY( 12px );
+		}
+
+		to {
+			opacity: 1;
+			transform: none;
+		}
+	}
+}

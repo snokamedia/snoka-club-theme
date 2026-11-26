@@ -1,0 +1,101 @@
+/**
+ * Island chrome: emergency dialog + toast stack. Base UI ships unstyled;
+ * this file is the entire visual voice. Loaded deferred with the islands
+ * entry, so it never blocks first paint.
+ */
+
+.snoka-trigger {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.5rem;
+}
+
+.snoka-backdrop {
+	position: fixed;
+	inset: 0;
+	z-index: 100;
+	background: rgb( 23 36 46 / 0.6 );
+}
+
+.snoka-popup {
+	position: fixed;
+	z-index: 101;
+	top: 50%;
+	left: 50%;
+	transform: translate( -50%, -50% );
+	width: min( 26rem, calc( 100vw - 2rem ) );
+	padding: var( --wp--preset--spacing--40 );
+	border-radius: var( --wp--preset--border-radius--large );
+	background: var( --wp--preset--color--base );
+	color: var( --wp--preset--color--contrast );
+	box-shadow: var( --wp--preset--shadow--deep );
+}
+
+.snoka-popup h2 {
+	margin-top: 0;
+	font-size: var( --wp--preset--font-size--large );
+}
+
+.snoka-popup p {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+}
+
+.snoka-popup-close {
+	position: absolute;
+	top: 0.75rem;
+	right: 0.75rem;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 2.75rem;
+	height: 2.75rem;
+	padding: 0;
+	border: 0;
+	border-radius: var( --wp--preset--border-radius--full );
+	background: transparent;
+	color: inherit;
+	cursor: pointer;
+}
+
+.snoka-popup-close:hover {
+	background: var( --wp--preset--color--tertiary );
+}
+
+.snoka-toasts {
+	position: fixed;
+	z-index: 102;
+	right: 1rem;
+	bottom: 1rem;
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+	max-width: min( 22rem, calc( 100vw - 2rem ) );
+}
+
+.snoka-toast {
+	display: flex;
+	align-items: center;
+	gap: 0.75rem;
+	padding: 0.75rem 1rem;
+	border-radius: var( --wp--preset--border-radius--medium );
+	background: var( --wp--preset--color--contrast );
+	color: var( --wp--preset--color--base );
+	box-shadow: var( --wp--preset--shadow--natural );
+}
+
+.snoka-toast button {
+	margin-left: auto;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 2.75rem;
+	height: 2.75rem;
+	padding: 0;
+	border: 1px solid currentcolor;
+	border-radius: var( --wp--preset--border-radius--small );
+	background: transparent;
+	color: inherit;
+	cursor: pointer;
+}

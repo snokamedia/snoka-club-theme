@@ -1,0 +1,133 @@
+/**
+ * Theme polish. Loaded on every frontend page via the `main` entry.
+ * Tokens come from theme.json; this file only adds what blocks cannot.
+ */
+
+/* Brand text selection. */
+::selection {
+	background: var( --wp--preset--color--secondary );
+	color: var( --wp--preset--color--base );
+}
+
+/* Visible keyboard focus everywhere. 3:1 against adjacent colors. */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[ tabindex ]:focus-visible {
+	outline: 3px solid var( --wp--preset--color--secondary );
+	outline-offset: 2px;
+	border-radius: 2px;
+}
+
+/* Balanced headlines, comfortable measure. */
+h1,
+h2,
+h3 {
+	text-wrap: balance;
+}
+
+/* Hero artwork: deep-sea gradient mesh + faint survey grid. Pure CSS,
+no image download, honors the no-webfont performance budget. */
+.snoka-hero-mesh {
+	position: relative;
+	isolation: isolate;
+	overflow: hidden;
+}
+
+.snoka-hero-mesh::before {
+	content: "";
+	position: absolute;
+	inset: 0;
+	z-index: 0;
+	background:
+		radial-gradient(
+			60rem 30rem at 85% -10%,
+			rgb( 168 107 44 / 0.55 ),
+			transparent 60%
+		),
+		radial-gradient(
+			50rem 36rem at -10% 110%,
+			rgb( 63 118 144 / 0.6 ),
+			transparent 60%
+		),
+		url( "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48'%3E%3Cpath d='M48 .5H0M.5 0v48' fill='none' stroke='%23ffffff' stroke-opacity='0.07'/%3E%3C/svg%3E" );
+	pointer-events: none;
+}
+
+.snoka-hero-mesh .wp-block-cover__inner-container {
+	position: relative;
+	z-index: 1;
+}
+
+/* Island trigger carries the button voice. Scoped to the component —
+no global side effects on other bare buttons. */
+.snoka-trigger {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.5rem;
+	padding: 0.875rem 1.5rem;
+	border: 0;
+	border-radius: var( --wp--preset--border-radius--medium );
+	background: var( --wp--preset--color--primary );
+	color: var( --wp--preset--color--base );
+	font-size: var( --wp--preset--font-size--medium );
+	cursor: pointer;
+}
+
+.snoka-trigger:hover {
+	background: var( --wp--preset--color--contrast );
+}
+
+/* Calm anchor jumps when swup is off or reduced-motion is on. */
+@media ( prefers-reduced-motion: no-preference ) {
+	html {
+		scroll-behavior: smooth;
+	}
+}
+
+/* D1: links on dark surfaces. Base on contrast = 15.81:1; the hover
+thickens the underline instead of changing color, so it never drops
+into the 3:1 secondary trap. Button links are untouched. Nav item links
+are excluded: the responsive container always carries the overlay color
+classes, even with the menu closed on a light header — letting this rule
+hit them turns closed-menu links white-on-white. The open overlay gets
+its colors from the nav block's overlayBackgroundColor/overlayTextColor. */
+.has-contrast-background-color a:not( .wp-element-button ):not( .wp-block-button__link ):not( .wp-block-navigation-item__content ) {
+	color: var( --wp--preset--color--base );
+	text-decoration: underline;
+	text-decoration-thickness: 1px;
+	text-underline-offset: 3px;
+}
+
+.has-contrast-background-color a:not( .wp-element-button ):not( .wp-block-button__link ):not( .wp-block-navigation-item__content ):hover {
+	text-decoration-thickness: 2px;
+}
+
+/* D3: one shape language. Cards and slabs consume the token scale —
+large radius, natural shadow — so surfaces stop fighting the buttons. */
+.snoka-card {
+	border-radius: var( --wp--preset--border-radius--large );
+	box-shadow: var( --wp--preset--shadow--natural );
+}
+
+.snoka-slab {
+	border-radius: var( --wp--preset--border-radius--large );
+}
+
+/* Root junctions flush site-wide: header/main/footer carry no gap between
+ * each other. Core's `:where(.wp-site-blocks) > *` rule has zero specificity,
+ * so this plain class rule wins without touching the blockGap token. Flow
+ * gaps *inside* sections are untouched — those are handled per-section below. */
+.wp-site-blocks > * {
+	margin-block-start: 0;
+}
+
+/* Opt-in flush top for full-bleed bands that carry their own vertical
+ * padding (front-page sections, slabs). Flow gaps everywhere else — including
+ * heading → paragraph rhythm inside content — are left alone. Add the
+ * `flush-top` class to a top-level section to drop its incoming flow gap. */
+.flush-top {
+	margin-block-start: 0;
+}
