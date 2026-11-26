@@ -59,10 +59,7 @@ export default function Edit({
 					/>
 				</PanelBody>
 			</InspectorControls>
-			<ServerSideRender
-				block="snoka-club/icon"
-				attributes={attributes}
-			/>
+			<ServerSideRender block="snoka-club/icon" attributes={attributes} />
 		</>
 	);
 }

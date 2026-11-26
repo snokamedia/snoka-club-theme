@@ -1,0 +1,29 @@
+{
+  "src/islands.tsx": {
+    "file": "assets/islands-BA0XDPT1.js",
+    "name": "islands",
+    "src": "src/islands.tsx",
+    "isEntry": true,
+    "css": [
+      "assets/islands-B7Mpd1K4.css"
+    ]
+  },
+  "src/main.ts": {
+    "file": "assets/main-DC_8Zb7a.js",
+    "name": "main",
+    "src": "src/main.ts",
+    "isEntry": true,
+    "css": [
+      "assets/main-Dm9PvtGJ.css"
+    ]
+  },
+  "src/transitions.ts": {
+    "file": "assets/transitions-DBRGZw-A.js",
+    "name": "transitions",
+    "src": "src/transitions.ts",
+    "isEntry": true,
+    "css": [
+      "assets/transitions-B3MuXmk8.css"
+    ]
+  }
+}

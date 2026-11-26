@@ -1,0 +1,8 @@
+{
+  "src/blocks/icon/index.ts": {
+    "file": "assets/blocks/icon-BKmJQNHa.js",
+    "name": "blocks/icon",
+    "src": "src/blocks/icon/index.ts",
+    "isEntry": true
+  }
+}

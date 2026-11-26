@@ -1,0 +1,1 @@
+#wp--skip-link--target{transition:opacity .18s ease-out,transform .18s ease-out}html.snoka-leaving #wp--skip-link--target{opacity:0;transform:translateY(6px)}@media (prefers-reduced-motion:reduce){#wp--skip-link--target{transition:none}html.snoka-leaving #wp--skip-link--target{opacity:1;transform:none}}
