@@ -42,24 +42,24 @@
 			"defaultPalette": false,
 			"duotone": [
 				{
-					"colors": [ "#17242E", "#EDF1F4" ],
+					"colors": [ "#1B2A3A", "#EFF4F9" ],
 					"name": "Dark grayscale",
 					"slug": "dark-grayscale"
 				},
 				{
-					"colors": [ "#1F4A5E", "#CBDCE5" ],
+					"colors": [ "#345889", "#D8E7F4" ],
 					"name": "Primary duotone",
 					"slug": "primary-duotone"
 				}
 			],
 			"gradients": [
 				{
-					"gradient": "linear-gradient(135deg, #1F4A5E 0%, #A86B2C 100%)",
+					"gradient": "linear-gradient(135deg, #345889 0%, #2E7D46 100%)",
 					"name": "Primary to secondary",
 					"slug": "primary-to-secondary"
 				},
 				{
-					"gradient": "linear-gradient(180deg, rgba(23,36,46,0.85) 0%, rgba(23,36,46,0.25) 100%)",
+					"gradient": "linear-gradient(180deg, rgba(27,42,58,0.85) 0%, rgba(27,42,58,0.25) 100%)",
 					"name": "Dark shroud",
 					"slug": "dark-shroud"
 				}
@@ -72,22 +72,32 @@
 					"slug": "base"
 				},
 				{
-					"color": "#17242E",
+					"color": "#1B2A3A",
 					"name": "Contrast",
 					"slug": "contrast"
 				},
 				{
-					"color": "#1F4A5E",
+					"color": "#345889",
 					"name": "Primary",
 					"slug": "primary"
 				},
 				{
-					"color": "#A86B2C",
+					"color": "#2B4870",
+					"name": "Primary Deep",
+					"slug": "primary-deep"
+				},
+				{
+					"color": "#7ADF75",
 					"name": "Secondary",
 					"slug": "secondary"
 				},
 				{
-					"color": "#EDF1F4",
+					"color": "#2E7D46",
+					"name": "Secondary Deep",
+					"slug": "secondary-deep"
+				},
+				{
+					"color": "#EFF4F9",
 					"name": "Tertiary",
 					"slug": "tertiary"
 				}
@@ -117,22 +127,22 @@
 			"presets": [
 				{
 					"name": "Natural",
-					"shadow": "6px 6px 9px rgba(23, 36, 46, 0.2)",
+					"shadow": "6px 6px 9px rgba(27, 42, 58, 0.2)",
 					"slug": "natural"
 				},
 				{
 					"name": "Deep",
-					"shadow": "12px 12px 50px rgba(23, 36, 46, 0.4)",
+					"shadow": "12px 12px 50px rgba(27, 42, 58, 0.4)",
 					"slug": "deep"
 				},
 				{
 					"name": "Outlined",
-					"shadow": "6px 6px 0px -3px #FFFFFF, 6px 6px #17242E",
+					"shadow": "6px 6px 0px -3px #FFFFFF, 6px 6px #1B2A3A",
 					"slug": "outlined"
 				},
 				{
 					"name": "Crisp",
-					"shadow": "6px 6px 0px #17242E",
+					"shadow": "6px 6px 0px #1B2A3A",
 					"slug": "crisp"
 				}
 			]
